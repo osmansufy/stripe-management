@@ -114,17 +114,36 @@ const InvoiceCreate = () => {
     try {
       setLoading(true);
 
+      // Determine invoice currency: if any existing Price is used, force that currency
+      const priceItems = lineItems.filter(
+        (li) => li.mode === "price" && li.price?.currency
+      );
+      const priceCurrency = priceItems[0]?.price?.currency;
+      if (
+        priceCurrency &&
+        priceItems.some((li) => li.price?.currency !== priceCurrency)
+      ) {
+        alert(
+          "Selected prices have mixed currencies. Please choose prices with the same currency."
+        );
+        setLoading(false);
+        return;
+      }
+
+      const invoiceCurrency = priceCurrency || formData.currency;
+
       // Create the invoice
       const invoiceData = {
         customer: formData.customer.id,
         description: formData.description,
         collection_method: formData.collection_method,
-        currency: formData.currency,
+        currency: invoiceCurrency,
         days_until_due:
           formData.collection_method === "send_invoice"
             ? formData.days_until_due
             : undefined,
         metadata: formData.metadata,
+        auto_advance: true,
       };
 
       const invoice = await stripeService.createInvoice(invoiceData);
@@ -137,10 +156,19 @@ const InvoiceCreate = () => {
           if (item.mode === "price") {
             // Require a selected price id
             if (!item.price?.id) continue;
+            if (
+              item.price?.currency &&
+              item.price.currency !== invoiceCurrency
+            ) {
+              alert(
+                `Price currency (${item.price.currency}) does not match invoice currency (${invoiceCurrency}).`
+              );
+              continue;
+            }
             await stripeService.createInvoiceItem({
               customer: formData.customer.id,
               invoice: invoice.id,
-              price: item.price.id,
+              pricing: { price: item.price.id },
               quantity: quantity,
               description: item.description || undefined,
             });
@@ -154,7 +182,7 @@ const InvoiceCreate = () => {
               invoice: invoice.id,
               description: item.description || undefined,
               unit_amount_decimal: String(unitAmount),
-              currency: formData.currency,
+              currency: invoiceCurrency,
               quantity: quantity,
             });
           }

@@ -4,9 +4,10 @@
   "description": "Desktop app for managing Stripe invoices and customers",
   "main": "electron/main.js",
   "homepage": "./",
+  "author": "Osman Goni Sufy",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && node scripts/build-electron.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron": "electron .",
@@ -47,6 +48,8 @@
   "build": {
     "appId": "com.stripe.invoice-desktop",
     "productName": "Stripe Invoice Manager",
+    "npmRebuild": false,
+    "buildDependenciesFromSource": false,
     "directories": {
       "output": "dist"
     },
@@ -62,7 +65,8 @@
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "category": "Office"
     }
   }
 }

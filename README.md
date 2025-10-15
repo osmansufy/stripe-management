@@ -28,18 +28,58 @@ A comprehensive desktop application built with Electron and React for managing S
 - **Connection Testing**: Verify API key validity
 - **Encrypted Storage**: Uses Electron's secure storage for API keys
 
-## Installation
+## Download & Installation
+
+### 📥 Download Pre-built Applications
+
+Download the latest version for your platform from [GitHub Releases](https://github.com/osmansufy/stripe-management/releases/latest):
+
+| Platform | Download | Size |
+|----------|----------|------|
+| **Windows** | [Windows Installer (.exe)](https://github.com/osmansufy/stripe-management/releases/latest) | ~80 MB |
+| **macOS** | [macOS DMG (.dmg)](https://github.com/osmansufy/stripe-management/releases/latest) | ~96 MB |
+| **Linux** | [AppImage (.AppImage)](https://github.com/osmansufy/stripe-management/releases/latest) | ~107 MB |
+
+### 🔧 Installation Instructions
+
+#### Windows
+1. Download `Stripe Invoice Manager Setup 1.0.0.exe`
+2. Double-click the installer
+3. Follow the installation wizard
+4. Launch from Start Menu
+
+#### macOS
+1. Download `Stripe Invoice Manager-1.0.0-arm64.dmg`
+2. Open the DMG file
+3. Drag "Stripe Invoice Manager" to Applications folder
+4. Launch from Applications
+5. If you see a security warning, go to System Preferences → Security & Privacy and click "Open Anyway"
+
+#### Linux
+1. Download `Stripe Invoice Manager-1.0.0-arm64.AppImage`
+2. Make it executable:
+   ```bash
+   chmod +x "Stripe Invoice Manager-1.0.0-arm64.AppImage"
+   ```
+3. Run it:
+   ```bash
+   ./Stripe\ Invoice\ Manager-1.0.0-arm64.AppImage
+   ```
+
+---
+
+## Development Setup
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- npm or yarn
+- npm or pnpm
 - Stripe account with API keys
 
-### Setup
+### Setup from Source
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/osmansufy/stripe-management.git
    cd stripe-management
    ```
 
@@ -53,24 +93,32 @@ A comprehensive desktop application built with Electron and React for managing S
    npm start
    ```
 
-4. **Run the Electron app**
+4. **Run the Electron app (in another terminal)**
    ```bash
    npm run electron-dev
    ```
 
 ### Building for Production
 
-1. **Build the React app**
-   ```bash
-   npm run build
-   ```
-
-2. **Package the Electron app**
+1. **Build for current platform**
    ```bash
    npm run electron-pack
    ```
 
-The packaged app will be available in the `dist` folder.
+2. **Build for specific platforms**
+   ```bash
+   # Windows and Linux
+   npm run build
+   npx electron-builder --win --linux
+
+   # macOS only
+   npx electron-builder --mac
+
+   # All platforms
+   npx electron-builder --win --linux --mac
+   ```
+
+The packaged apps will be available in the `dist` folder.
 
 ## Usage
 
@@ -207,10 +255,41 @@ stripe-management/
 - Review the console for error messages
 - Ensure your Stripe account has the necessary permissions
 
+## System Requirements
+
+**Minimum Requirements:**
+- **RAM**: 4 GB
+- **Disk Space**: 200 MB
+- **OS**: 
+  - Windows 10/11 (ARM64)
+  - macOS 10.12+ (Apple Silicon)
+  - Linux (ARM64)
+
+**Recommended:**
+- **RAM**: 8 GB or more
+- Active internet connection for Stripe API access
+
+## Author
+
+**Osman Goni Sufy**
+- GitHub: [@osmansufy](https://github.com/osmansufy)
+- Repository: [stripe-management](https://github.com/osmansufy/stripe-management)
+
+## Support
+
+For bug reports and feature requests, please create an issue on [GitHub Issues](https://github.com/osmansufy/stripe-management/issues).
+
 ## License
 
-This project is for internal use only. Please ensure compliance with Stripe's terms of service when using their API.
+This project is for internal use. Please ensure compliance with Stripe's terms of service when using their API.
 
-## Contributing
+## Acknowledgments
 
-This is an internal tool. For updates or improvements, please contact the development team.
+- Built with [Electron](https://www.electronjs.org/)
+- UI powered by [Material-UI](https://mui.com/)
+- Stripe integration via [Stripe Node.js SDK](https://github.com/stripe/stripe-node)
+
+---
+
+**Version**: 1.0.0  
+**Last Updated**: October 15, 2025

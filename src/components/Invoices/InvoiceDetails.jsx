@@ -29,6 +29,8 @@ import {
   Cancel as CancelIcon,
   GetApp as DownloadIcon,
   Visibility as ViewIcon,
+  ContentCopy as CopyIcon,
+  Email as EmailIcon,
 } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useStripe } from "../../context/StripeContext";
@@ -120,6 +122,36 @@ const InvoiceDetails = () => {
 
   const closeConfirmDialog = () => {
     setConfirmDialog({ open: false, action: "", title: "", message: "" });
+  };
+
+  const copyInvoiceLink = async () => {
+    if (!invoice?.hosted_invoice_url) return;
+    try {
+      await navigator.clipboard.writeText(invoice.hosted_invoice_url);
+      // Provide lightweight UX feedback
+      alert("Invoice link copied to clipboard");
+    } catch (_) {
+      // Fallback for environments without Clipboard API permissions
+      const textarea = document.createElement("textarea");
+      textarea.value = invoice.hosted_invoice_url;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      alert("Invoice link copied to clipboard");
+    }
+  };
+
+  const emailInvoiceLink = () => {
+    if (!invoice?.hosted_invoice_url) return;
+    const subject = encodeURIComponent(
+      `Invoice ${invoice.number || invoice.id}`
+    );
+    const body = encodeURIComponent(
+      `Hi,\n\nPlease view and pay your invoice here: ${invoice.hosted_invoice_url}\n\nThank you.`
+    );
+    const to = encodeURIComponent(invoice.customer_email || "");
+    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
   };
 
   const getStatusColor = (status) => {
@@ -297,6 +329,24 @@ const InvoiceDetails = () => {
               onClick={() => window.open(invoice.hosted_invoice_url, "_blank")}
             >
               View PDF
+            </Button>
+          )}
+          {invoice.hosted_invoice_url && (
+            <Button
+              variant="outlined"
+              startIcon={<CopyIcon />}
+              onClick={copyInvoiceLink}
+            >
+              Copy Link
+            </Button>
+          )}
+          {invoice.hosted_invoice_url && (
+            <Button
+              variant="outlined"
+              startIcon={<EmailIcon />}
+              onClick={emailInvoiceLink}
+            >
+              Email Link
             </Button>
           )}
         </Box>
